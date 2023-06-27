@@ -11,6 +11,7 @@ authors = [
 description = "Simple code editor and runner for throwaway code"
 dependencies = [
     "PyQt6",
+    "PyQt6-QScintilla",
 ]
 
 [project.gui-scripts]
