@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QApplication
 from mnar.gui.window import MainWindow
 
 def run() -> None:
+    """Create and display the application window."""
     app = QApplication([])
     main_window = MainWindow()
     main_window.show()
