@@ -1,6 +1,7 @@
 from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QLabel, QLayout, QMainWindow, QPlainTextEdit, QVBoxLayout, QWidget
 
+from mnar.execute import get_output
 from mnar.gui.editor import Editor
 
 class OutputWidget(QPlainTextEdit):
@@ -22,7 +23,9 @@ class MainWindow(QMainWindow):
     def on_run(self) -> None:
         """Callback to run code from the editor."""
         editor_text = self._editor.text()
-        self._output_widget.setPlainText(editor_text)
+        stdout, stderr = get_output(editor_text)
+        output_str = f"stderr:\n{stderr}\nstdout:\n{stdout}"
+        self._output_widget.setPlainText(output_str)
 
     def _make_central_widget(self) -> QWidget:
         """Create and return the central widget for this window."""
