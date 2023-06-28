@@ -1,5 +1,5 @@
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeySequence, QShortcut
+from PyQt6.QtCore import QSettings, Qt
+from PyQt6.QtGui import QCloseEvent, QKeySequence, QShortcut
 from PyQt6.QtWidgets import QLabel, QMainWindow, QPlainTextEdit, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
@@ -18,8 +18,15 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Mnar")
         self._editor = Editor()
         self._output_widget = OutputWidget()
-        self.setCentralWidget(self._make_central_widget())
+        self._main_splitter = self._make_main_splitter()
+        self.setCentralWidget(self._main_splitter)
+        self._restore_window_state()
         QShortcut(QKeySequence("Ctrl+r"), self).activated.connect(self.on_run)
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        """Handle window closed event."""
+        self._save_window_state()
+        return super().closeEvent(a0)
 
     def on_run(self) -> None:
         """Callback to run code from the editor."""
@@ -28,8 +35,8 @@ class MainWindow(QMainWindow):
         output_str = f"stderr:\n{stderr}\nstdout:\n{stdout}"
         self._output_widget.setPlainText(output_str)
 
-    def _make_central_widget(self) -> QWidget:
-        """Create and return the central widget for this window."""
+    def _make_main_splitter(self) -> QSplitter:
+        """Create and return the main splitter widget for this window."""
         splitter = QSplitter(Qt.Orientation.Vertical)
         splitter.addWidget(self._editor)
         output_container = QWidget()
@@ -39,3 +46,29 @@ class MainWindow(QMainWindow):
         output_container.setLayout(output_layout)
         splitter.addWidget(output_container)
         return splitter
+
+    def _restore_window_state(self) -> None:
+        """
+        Restores window state from previous session (or sets defaults if no
+        previous session).
+        """
+        settings = QSettings()
+        settings.beginGroup("main_window")
+        if settings.contains("window_geometry"):
+            self.restoreGeometry(settings.value("window_geometry"))
+        else:
+            self.resize(800, 600)
+        if settings.contains("splitter_state"):
+            self._main_splitter.restoreState(settings.value("splitter_state"))
+        else:
+            self._main_splitter.setStretchFactor(0, 2)
+            self._main_splitter.setStretchFactor(1, 1)
+        settings.endGroup()
+
+    def _save_window_state(self) -> None:
+        """Persist the state of the window (i.e. the geometry)."""
+        settings = QSettings()
+        settings.beginGroup("main_window")
+        settings.setValue("window_geometry", self.saveGeometry())
+        settings.setValue("splitter_state", self._main_splitter.saveState())
+        settings.endGroup()
