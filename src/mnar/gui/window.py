@@ -1,5 +1,6 @@
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QKeySequence, QShortcut
-from PyQt6.QtWidgets import QLabel, QLayout, QMainWindow, QPlainTextEdit, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QLabel, QMainWindow, QPlainTextEdit, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
@@ -29,14 +30,12 @@ class MainWindow(QMainWindow):
 
     def _make_central_widget(self) -> QWidget:
         """Create and return the central widget for this window."""
-        central_widget = QWidget()
-        central_widget.setLayout(self._make_layout())
-        return central_widget
-
-    def _make_layout(self) -> QLayout:
-        """Create and return the layout for the central widget of this window."""
-        layout = QVBoxLayout()
-        layout.addWidget(self._editor)
-        layout.addWidget(QLabel("Output:"))
-        layout.addWidget(self._output_widget)
-        return layout
+        splitter = QSplitter(Qt.Orientation.Vertical)
+        splitter.addWidget(self._editor)
+        output_container = QWidget()
+        output_layout = QVBoxLayout()
+        output_layout.addWidget(QLabel("Output:"))
+        output_layout.addWidget(self._output_widget)
+        output_container.setLayout(output_layout)
+        splitter.addWidget(output_container)
+        return splitter
