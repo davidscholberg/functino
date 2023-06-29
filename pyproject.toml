@@ -14,5 +14,9 @@ dependencies = [
     "PyQt6-QScintilla",
 ]
 
+# This is mainly for debugging on windows so that we can see stderr.
+[project.scripts]
+mnarc = "mnar.gui:run"
+
 [project.gui-scripts]
 mnar = "mnar.gui:run"

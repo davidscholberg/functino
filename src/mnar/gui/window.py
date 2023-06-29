@@ -1,9 +1,10 @@
 from PyQt6.QtCore import QSettings, Qt
 from PyQt6.QtGui import QCloseEvent, QKeySequence, QShortcut
-from PyQt6.QtWidgets import QLabel, QMainWindow, QPlainTextEdit, QSplitter, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QComboBox, QLabel, QMainWindow, QPlainTextEdit, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
+from mnar.language import get_language_profiles
 
 class OutputWidget(QPlainTextEdit):
     """Widget for displaying the results of executing the code in the editor."""
@@ -16,6 +17,7 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Mnar")
+        self._languages_combo_box = QComboBox()
         self._editor = Editor()
         self._output_widget = OutputWidget()
         self._main_splitter = self._make_main_splitter()
@@ -31,19 +33,27 @@ class MainWindow(QMainWindow):
     def on_run(self) -> None:
         """Callback to run code from the editor."""
         editor_text = self._editor.text()
-        stdout, stderr = get_output(editor_text)
+        current_language_profile = self._languages_combo_box.currentData()
+        stdout, stderr = get_output(current_language_profile, editor_text)
         output_str = f"stderr:\n{stderr}\nstdout:\n{stdout}"
         self._output_widget.setPlainText(output_str)
 
     def _make_main_splitter(self) -> QSplitter:
         """Create and return the main splitter widget for this window."""
-        splitter = QSplitter(Qt.Orientation.Vertical)
-        splitter.addWidget(self._editor)
+        editor_container = QWidget()
+        editor_layout = QVBoxLayout()
+        for language_profile in get_language_profiles():
+            self._languages_combo_box.addItem(language_profile.name, language_profile)
+        editor_layout.addWidget(self._languages_combo_box)
+        editor_layout.addWidget(self._editor)
+        editor_container.setLayout(editor_layout)
         output_container = QWidget()
         output_layout = QVBoxLayout()
         output_layout.addWidget(QLabel("Output:"))
         output_layout.addWidget(self._output_widget)
         output_container.setLayout(output_layout)
+        splitter = QSplitter(Qt.Orientation.Vertical)
+        splitter.addWidget(editor_container)
         splitter.addWidget(output_container)
         return splitter
 
