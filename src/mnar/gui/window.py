@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QMargins, QSettings, Qt
 from PyQt6.QtGui import QCloseEvent, QKeySequence, QShortcut
-from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QMainWindow, QPlainTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow, QPlainTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
@@ -11,6 +11,7 @@ class OutputWidget(QPlainTextEdit):
     def __init__(self) -> None:
         super().__init__()
         self.setReadOnly(True)
+        self.setFrameStyle(QFrame.Shape.NoFrame)
 
 class MainWindow(QMainWindow):
     """Main window for this application."""
