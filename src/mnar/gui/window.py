@@ -68,7 +68,6 @@ class MainWindow(QMainWindow):
         editor_container.setLayout(editor_layout)
         output_layout = QVBoxLayout()
         output_layout.setContentsMargins(QMargins())
-        output_layout.addWidget(QLabel("Output:"))
         output_layout.addWidget(self._output_widget)
         output_container = QWidget()
         output_container.setLayout(output_layout)
