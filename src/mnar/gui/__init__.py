@@ -7,6 +7,7 @@ def run() -> None:
     app = QApplication([])
     app.setOrganizationName("davidscholberg")
     app.setApplicationName("mnar")
+    app.setStyle("fusion")
     main_window = MainWindow()
     main_window.show()
     app.exec()
