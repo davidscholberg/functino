@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QMargins, QSettings, Qt
-from PyQt6.QtGui import QCloseEvent, QKeySequence, QShortcut
-from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow, QPlainTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
+from PyQt6.QtGui import QCloseEvent, QColor, QKeySequence, QPalette, QShortcut
+from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
@@ -14,7 +14,7 @@ class UniformSplitter(QSplitter):
         self.setPalette(get_uniform_palette(self.palette()))
         self.setAutoFillBackground(True)
 
-class OutputWidget(QPlainTextEdit):
+class OutputWidget(QTextEdit):
     """Widget for displaying the results of executing the code in the editor."""
     def __init__(self) -> None:
         super().__init__()
@@ -44,8 +44,19 @@ class MainWindow(QMainWindow):
         editor_text = self._editor.text()
         current_language_profile = self._languages_combo_box.currentData()
         stdout, stderr = get_output(current_language_profile, editor_text)
-        output_str = f"stderr:\n{stderr}\nstdout:\n{stdout}"
-        self._output_widget.setPlainText(output_str)
+        self._output_widget.setText("")
+        if not stderr and not stdout:
+            text_color_hex = self.palette().color(QPalette.ColorRole.BrightText).name(QColor.NameFormat.HexArgb)
+            html = f"<span style=\"color:{text_color_hex}\"><em>no output</em></span>"
+            self._output_widget.setHtml(html)
+            return
+        if stderr:
+            original_text_color = self._output_widget.palette().color(QPalette.ColorRole.Text)
+            self._output_widget.setTextColor(self.palette().color(QPalette.ColorRole.BrightText))
+            self._output_widget.append(stderr)
+            self._output_widget.setTextColor(original_text_color)
+        if stdout:
+            self._output_widget.append(stdout)
 
     def _make_main_splitter(self) -> QSplitter:
         """Create and return the main splitter widget for this window."""
