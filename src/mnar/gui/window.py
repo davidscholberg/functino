@@ -1,6 +1,6 @@
-from PyQt6.QtCore import QSettings, Qt
+from PyQt6.QtCore import QMargins, QSettings, Qt
 from PyQt6.QtGui import QCloseEvent, QKeySequence, QShortcut
-from PyQt6.QtWidgets import QComboBox, QLabel, QMainWindow, QPlainTextEdit, QSplitter, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QMainWindow, QPlainTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
@@ -44,7 +44,16 @@ class MainWindow(QMainWindow):
         editor_layout = QVBoxLayout()
         for language_profile in get_language_profiles():
             self._languages_combo_box.addItem(language_profile.name, language_profile)
-        editor_layout.addWidget(self._languages_combo_box)
+        self._languages_combo_box.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        top_row_spacer = QWidget()
+        top_row_spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        top_row_container = QWidget()
+        top_row_layout = QHBoxLayout()
+        top_row_layout.setContentsMargins(QMargins())
+        top_row_layout.addWidget(self._languages_combo_box)
+        top_row_layout.addWidget(top_row_spacer)
+        top_row_container.setLayout(top_row_layout)
+        editor_layout.addWidget(top_row_container)
         editor_layout.addWidget(self._editor)
         editor_container.setLayout(editor_layout)
         output_container = QWidget()
