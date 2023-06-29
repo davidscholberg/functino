@@ -42,6 +42,7 @@ class MainWindow(QMainWindow):
         """Create and return the main splitter widget for this window."""
         editor_container = QWidget()
         editor_layout = QVBoxLayout()
+        editor_layout.setContentsMargins(QMargins())
         for language_profile in get_language_profiles():
             self._languages_combo_box.addItem(language_profile.name, language_profile)
         self._languages_combo_box.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
@@ -58,6 +59,7 @@ class MainWindow(QMainWindow):
         editor_container.setLayout(editor_layout)
         output_container = QWidget()
         output_layout = QVBoxLayout()
+        output_layout.setContentsMargins(QMargins())
         output_layout.addWidget(QLabel("Output:"))
         output_layout.addWidget(self._output_widget)
         output_container.setLayout(output_layout)
