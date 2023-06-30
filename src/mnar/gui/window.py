@@ -46,13 +46,13 @@ class MainWindow(QMainWindow):
         stdout, stderr = get_output(current_language_profile, editor_text)
         self._output_widget.setText("")
         if not stderr and not stdout:
-            text_color_hex = self.palette().color(QPalette.ColorRole.BrightText).name(QColor.NameFormat.HexArgb)
+            text_color_hex = QColor(Qt.GlobalColor.darkGray).name(QColor.NameFormat.HexArgb)
             html = f"<span style=\"color:{text_color_hex}\"><em>no output</em></span>"
             self._output_widget.setHtml(html)
             return
         if stderr:
             original_text_color = self._output_widget.palette().color(QPalette.ColorRole.Text)
-            self._output_widget.setTextColor(self.palette().color(QPalette.ColorRole.BrightText))
+            self._output_widget.setTextColor(Qt.GlobalColor.red)
             self._output_widget.append(stderr)
             self._output_widget.setTextColor(original_text_color)
         if stdout:
