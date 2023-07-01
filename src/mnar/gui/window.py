@@ -4,8 +4,9 @@ from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow,
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
-from mnar.gui.theme import get_uniform_palette
-from mnar.language import get_language_profiles
+from mnar.gui.language import get_lexer_class
+from mnar.gui.theme import Theme, get_uniform_palette
+from mnar.language import LanguageProfile, get_language_profiles
 
 class UniformSplitter(QSplitter):
     """QSplitter with uniform styling."""
@@ -23,14 +24,16 @@ class OutputWidget(QTextEdit):
 
 class MainWindow(QMainWindow):
     """Main window for this application."""
-    def __init__(self) -> None:
+    def __init__(self, theme: Theme) -> None:
         super().__init__()
         self.setWindowTitle("Mnar")
+        self._theme = theme
         self._languages_combo_box = QComboBox()
         self._editor = Editor()
         self._output_widget = OutputWidget()
         self._main_splitter = self._make_main_splitter()
         self.setCentralWidget(self._main_splitter)
+        self._set_editor_lexer()
         self._restore_window_state()
         QShortcut(QKeySequence("Ctrl+r"), self).activated.connect(self.on_run)
 
@@ -112,3 +115,10 @@ class MainWindow(QMainWindow):
         settings.setValue("window_geometry", self.saveGeometry())
         settings.setValue("splitter_state", self._main_splitter.saveState())
         settings.endGroup()
+
+    def _set_editor_lexer(self) -> None:
+        current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
+        lexer = get_lexer_class(current_language_profile.language_id)()
+        for style_id, color_hex in self._theme.get_lexer_color_map(current_language_profile.language_id).items():
+            lexer.setColor(QColor(color_hex), style_id)
+        self._editor.setLexer(lexer)

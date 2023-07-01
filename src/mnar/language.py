@@ -15,7 +15,7 @@ class LanguageProfile:
         with open(profile_config_path, "rb") as f:
             profile_data = tomllib.load(f)
             self._name: str = profile_data["name"]
-            self._id: str = profile_data["id"]
+            self._language_id: str = profile_data["language_id"]
             self._command: str = profile_data["command"]["default"]
             this_system = platform.system()
             if this_system in profile_data["command"]:
@@ -27,9 +27,9 @@ class LanguageProfile:
         return self._name
 
     @property
-    def id(self) -> str:
-        """The id of this profile, meant to be a unique internal identifier."""
-        return self._id
+    def language_id(self) -> str:
+        """The ID of the language to use with this profile."""
+        return self._language_id
 
     @property
     def command(self) -> str:

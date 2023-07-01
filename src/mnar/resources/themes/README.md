@@ -1,0 +1,1 @@
+The theme files in this directory have been copied from [Notepad++](https://notepad-plus-plus.org/).

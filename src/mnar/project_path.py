@@ -16,3 +16,7 @@ def get_language_profile_paths() -> tuple[Path]:
     """Get paths of all language profiles."""
     parent_dir = get_language_profiles_path()
     return tuple(parent_dir.glob("*.toml"))
+
+def get_themes_path() -> Path:
+    """Get path of themes directory."""
+    return get_resources_path() / "themes"

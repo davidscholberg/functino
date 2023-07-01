@@ -1,5 +1,5 @@
 name = "Python"
-id = "python"
+language_id = "python"
 
 [command]
 default = "python {file_path}"
