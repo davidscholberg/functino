@@ -16,10 +16,10 @@ class LanguageProfile:
             profile_data = tomllib.load(f)
             self._name: str = profile_data["name"]
             self._language_id: str = profile_data["language_id"]
-            self._command: str = profile_data["command"]["default"]
+            self._command: tuple[str] = tuple(profile_data["command"]["default"])
             this_system = platform.system()
             if this_system in profile_data["command"]:
-                self._command = profile_data["command"][this_system]
+                self._command = tuple(profile_data["command"][this_system])
 
     @property
     def name(self) -> str:
@@ -32,13 +32,18 @@ class LanguageProfile:
         return self._language_id
 
     @property
-    def command(self) -> str:
+    def command(self) -> tuple[str]:
         """The command template used to execute a file for this language."""
         return self._command
 
-    def generate_command(self, file_path: str) -> str:
-        """Generate command string from this profile's template."""
-        return self._command.format(file_path=file_path)
+    def generate_command(self, file_path: str) -> tuple[str]:
+        """Generate command tuple from this profile's template."""
+        command_args = []
+        for arg in self._command:
+            if arg == r"{file_path}":
+                arg = arg.format(file_path=file_path)
+            command_args.append(arg)
+        return tuple(command_args)
 
 def get_language_profiles() -> tuple[LanguageProfile]:
     """Return tuple of all language profiles."""

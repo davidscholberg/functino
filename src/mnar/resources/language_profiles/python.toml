@@ -2,6 +2,6 @@ name = "Python"
 language_id = "python"
 
 [command]
-default = "python {file_path}"
+default = ["python", "{file_path}"]
 # On windows we have to use pythonw to prevent the console window from popping up.
-Windows = "pythonw {file_path}"
+Windows = ["pythonw", "{file_path}"]

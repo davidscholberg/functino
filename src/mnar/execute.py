@@ -1,12 +1,13 @@
 import os
 import subprocess
+from typing import Sequence
 
 from mnar.file import write_to_tmp_file
 from mnar.language import LanguageProfile
 
-def execute(command: str) -> tuple[str, str]:
+def execute(command: Sequence[str]) -> tuple[str, str]:
     """Execute the given command and return the stdout and stderr."""
-    result = subprocess.run(command, capture_output=True)
+    result = subprocess.run(command, capture_output=True, shell=False)
     return (result.stdout.decode(), result.stderr.decode())
 
 def get_output(language_profile: LanguageProfile, code: str) -> tuple[str, str]:
