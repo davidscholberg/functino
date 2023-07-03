@@ -119,6 +119,9 @@ class MainWindow(QMainWindow):
     def _set_editor_lexer(self) -> None:
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
         lexer = get_lexer_class(current_language_profile.language_id)()
+        lexer.setPaper(self.palette().color(QPalette.ColorRole.Base))
+        lexer.setColor(self.palette().color(QPalette.ColorRole.Text))
         for style_id, color_hex in self._theme.get_lexer_color_map(current_language_profile.language_id).items():
             lexer.setColor(QColor(color_hex), style_id)
+            lexer.setPaper(self.palette().color(QPalette.ColorRole.Base), style_id)
         self._editor.setLexer(lexer)
