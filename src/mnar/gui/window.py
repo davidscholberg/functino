@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QMargins, QSettings, Qt
-from PyQt6.QtGui import QCloseEvent, QColor, QKeySequence, QPalette, QShortcut
+from PyQt6.QtGui import QCloseEvent, QColor, QFont, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
@@ -21,6 +21,9 @@ class OutputWidget(QTextEdit):
         super().__init__()
         self.setReadOnly(True)
         self.setFrameStyle(QFrame.Shape.NoFrame)
+        font = self.font()
+        font.setPointSize(12)
+        self.setFont(font)
 
 class MainWindow(QMainWindow):
     """Main window for this application."""
@@ -121,7 +124,7 @@ class MainWindow(QMainWindow):
         lexer = get_lexer_class(current_language_profile.language_id)()
         lexer.setPaper(self.palette().color(QPalette.ColorRole.Base))
         lexer.setColor(self.palette().color(QPalette.ColorRole.Text))
+        lexer.setFont(self._editor.font())
         for style_id, color_hex in self._theme.get_lexer_color_map(current_language_profile.language_id).items():
             lexer.setColor(QColor(color_hex), style_id)
-            lexer.setPaper(self.palette().color(QPalette.ColorRole.Base), style_id)
         self._editor.setLexer(lexer)
