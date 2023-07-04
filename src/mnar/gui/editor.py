@@ -16,3 +16,4 @@ class Editor(QsciScintilla):
         self.setMarginLineNumbers(0, True)
         margin_width = self.SendScintilla(QsciScintilla.SCI_TEXTWIDTH, QsciScintilla.STYLE_LINENUMBER, sip.voidptr(b"0"))
         self.setMarginWidth(0, round(margin_width * 2.5))
+        self.setMarginWidth(1, 0)
