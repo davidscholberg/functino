@@ -1,18 +1,26 @@
 import os
 import subprocess
-from typing import Sequence
+from tempfile import TemporaryDirectory, mkstemp
+from typing import cast
 
 from mnar.file import write_to_tmp_file
 from mnar.language import LanguageProfile
 
-def execute(command: Sequence[str]) -> tuple[str, str]:
-    """Execute the given command and return the stdout and stderr."""
-    result = subprocess.run(command, capture_output=True, shell=False)
-    return (result.stdout.decode(), result.stderr.decode())
-
 def get_output(language_profile: LanguageProfile, code: str) -> tuple[str, str]:
-    """Write code to file, execute it, and return the stdout and stderr."""
-    file_path = write_to_tmp_file(code)
-    output = execute(language_profile.generate_command(file_path))
-    os.remove(file_path)
-    return output
+    """
+    Write code to file, execute it, and return the stdout and stderr.
+
+    If the given language profile requires compilation and if the compilation
+    fails, the results of the compilation will be returned.
+    """
+    with TemporaryDirectory() as temp_dir_path:
+        source_file_path = write_to_tmp_file(code, temp_dir_path)
+        executable_file_path: str | None = None
+        if language_profile.compile:
+            fd, executable_file_path = mkstemp(dir=temp_dir_path)
+            os.close(fd)
+        command = language_profile.generate_command(source_file_path, executable_file_path)
+        result = subprocess.run(command, capture_output=True, shell=False)
+        if language_profile.compile and result.returncode == 0:
+            result = subprocess.run((cast(str, executable_file_path),), capture_output=True, shell=False)
+        return (result.stdout.decode(), result.stderr.decode())

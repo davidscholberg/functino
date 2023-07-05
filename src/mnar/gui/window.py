@@ -121,7 +121,10 @@ class MainWindow(QMainWindow):
 
     def _set_editor_lexer(self) -> None:
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
-        lexer = get_lexer_class(current_language_profile.language_id)()
+        lexer_class = get_lexer_class(current_language_profile.language_id)
+        if lexer_class is None:
+            return
+        lexer = lexer_class()
         lexer.setPaper(self.palette().color(QPalette.ColorRole.Base))
         lexer.setColor(self.palette().color(QPalette.ColorRole.Text))
         lexer.setFont(self._editor.font())

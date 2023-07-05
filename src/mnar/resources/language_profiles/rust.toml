@@ -1,0 +1,6 @@
+name = "Rust"
+language_id = "rust"
+compile = true
+
+[command]
+default = ["rustc", "{file_path}", "-o", "{executable_path}"]

@@ -1,5 +1,6 @@
 name = "Python"
 language_id = "python"
+compile = false
 
 [command]
 default = ["python", "{file_path}"]
