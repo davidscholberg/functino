@@ -39,9 +39,9 @@ class MainWindow(QMainWindow):
         self._main_splitter = self._make_main_splitter()
         self.setCentralWidget(self._main_splitter)
         self._populate_languages_combobox()
+        self._restore_window_state()
         self._editor_index_map: dict[int, int] = {}
         self.switch_editor()
-        self._restore_window_state()
         self._languages_combo_box.currentIndexChanged.connect(self.switch_editor)
         QShortcut(QKeySequence("Ctrl+r"), self).activated.connect(self.on_run)
 
@@ -139,7 +139,7 @@ class MainWindow(QMainWindow):
 
         Note that not everything saved by _save_window_state is restored here;
         saved code from editors is not restored until the respective editor is
-        loaded by the user.
+        loaded.
         """
         settings = QSettings()
         settings.beginGroup("main_window")
@@ -152,6 +152,13 @@ class MainWindow(QMainWindow):
         else:
             self._main_splitter.setStretchFactor(0, 2)
             self._main_splitter.setStretchFactor(1, 1)
+        if settings.contains("language_selection"):
+            previous_language_profile_name = settings.value("language_selection")
+            for language_index in range(self._languages_combo_box.count()):
+                language_profile: LanguageProfile = self._languages_combo_box.itemData(language_index)
+                if previous_language_profile_name == language_profile.name:
+                    self._languages_combo_box.setCurrentIndex(language_index)
+                    break
         settings.endGroup()
 
     def _save_window_state(self) -> None:
@@ -163,8 +170,12 @@ class MainWindow(QMainWindow):
         settings.beginGroup("main_window")
         settings.setValue("window_geometry", self.saveGeometry())
         settings.setValue("splitter_state", self._main_splitter.saveState())
+        current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
+        settings.setValue("language_selection", current_language_profile.name)
         settings.beginGroup("editor_text")
         for language_index in range(self._languages_combo_box.count()):
+            if language_index not in self._editor_index_map:
+                continue
             language_profile: LanguageProfile = self._languages_combo_box.itemData(language_index)
             editor: Editor = cast(Editor, self._editors_layout.widget(self._editor_index_map[language_index]))
             settings.setValue(language_profile.name, editor.text())
