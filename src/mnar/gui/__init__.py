@@ -1,3 +1,5 @@
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QStyleHints
 from PyQt6.QtWidgets import QApplication
 
 from mnar.gui.theme import Theme
@@ -10,7 +12,12 @@ def run() -> None:
     app.setOrganizationName("davidscholberg")
     app.setApplicationName("mnar")
     app.setStyle("fusion")
-    theme = Theme(get_themes_path() / "dark.xml")
+    theme = None
+    match app.styleHints().colorScheme():
+        case Qt.ColorScheme.Light:
+            theme = Theme(get_themes_path() / "light.xml")
+        case _:
+            theme = Theme(get_themes_path() / "dark.xml")
     main_window = MainWindow(theme)
     main_window.show()
     app.exec()
