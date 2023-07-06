@@ -1,4 +1,5 @@
 from typing import cast
+
 from PyQt6.QtCore import QMargins, QSettings, Qt
 from PyQt6.QtGui import QCloseEvent, QColor, QFont, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow, QStackedLayout, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
@@ -81,8 +82,9 @@ class MainWindow(QMainWindow):
             self._editors_layout.setCurrentIndex(editor_index)
             return
         self._editors_layout.addWidget(Editor())
-        self._set_editor_lexer()
         self._editors_layout.setCurrentIndex(editor_index)
+        self._set_editor_lexer()
+        self._restore_editor_text()
 
     def _make_main_splitter(self) -> QSplitter:
         """Create and return the main splitter widget for this window."""
@@ -118,10 +120,26 @@ class MainWindow(QMainWindow):
         for language_profile in get_language_profiles():
             self._languages_combo_box.addItem(language_profile.name, language_profile)
 
+    def _restore_editor_text(self) -> None:
+        """Restore any saved editor text for the current language profile."""
+        settings = QSettings()
+        settings.beginGroup("main_window")
+        settings.beginGroup("editor_text")
+        current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
+        if settings.contains(current_language_profile.name):
+            current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
+            current_editor.setText(settings.value(current_language_profile.name))
+        settings.endGroup()
+        settings.endGroup()
+
     def _restore_window_state(self) -> None:
         """
         Restores window state from previous session (or sets defaults if no
         previous session).
+
+        Note that not everything saved by _save_window_state is restored here;
+        saved code from editors is not restored until the respective editor is
+        loaded by the user.
         """
         settings = QSettings()
         settings.beginGroup("main_window")
@@ -137,11 +155,20 @@ class MainWindow(QMainWindow):
         settings.endGroup()
 
     def _save_window_state(self) -> None:
-        """Persist the state of the window (i.e. the geometry)."""
+        """
+        Persist the state of the window (e.g. the geometry, user text contents,
+        etc.).
+        """
         settings = QSettings()
         settings.beginGroup("main_window")
         settings.setValue("window_geometry", self.saveGeometry())
         settings.setValue("splitter_state", self._main_splitter.saveState())
+        settings.beginGroup("editor_text")
+        for language_index in range(self._languages_combo_box.count()):
+            language_profile: LanguageProfile = self._languages_combo_box.itemData(language_index)
+            editor: Editor = cast(Editor, self._editors_layout.widget(self._editor_index_map[language_index]))
+            settings.setValue(language_profile.name, editor.text())
+        settings.endGroup()
         settings.endGroup()
 
     def _set_editor_lexer(self) -> None:

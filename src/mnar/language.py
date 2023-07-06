@@ -24,12 +24,21 @@ class LanguageProfile:
 
     @property
     def name(self) -> str:
-        """The display name of this profile."""
+        """
+        The display name of this profile.
+
+        Each profile must have a unique name attribute.
+        """
         return self._name
 
     @property
     def language_id(self) -> str:
-        """The ID of the language to use with this profile."""
+        """
+        The ID of the language to use with this profile.
+
+        These IDs should correspond to the LexerType name attributes in the
+        theme files.
+        """
         return self._language_id
 
     @property
@@ -78,4 +87,9 @@ class LanguageProfile:
 
 def get_language_profiles() -> tuple[LanguageProfile]:
     """Return tuple of all language profiles."""
-    return tuple(map(LanguageProfile, get_language_profile_paths()))
+    language_profiles = list(map(LanguageProfile, get_language_profile_paths()))
+    language_profiles.sort(key=lambda l: l.name)
+    for i in range(len(language_profiles) - 1):
+        if language_profiles[i].name == language_profiles[i + 1].name:
+            raise RuntimeError(f"language profile names must all be unique (duplicate name: {language_profiles[i].name})")
+    return tuple(language_profiles)
