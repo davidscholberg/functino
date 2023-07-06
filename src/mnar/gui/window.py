@@ -1,6 +1,7 @@
+from typing import cast
 from PyQt6.QtCore import QMargins, QSettings, Qt
 from PyQt6.QtGui import QCloseEvent, QColor, QFont, QKeySequence, QPalette, QShortcut
-from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow, QStackedLayout, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
@@ -32,12 +33,15 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Mnar")
         self._theme = theme
         self._languages_combo_box = QComboBox()
-        self._editor = Editor()
+        self._editors_layout = QStackedLayout()
         self._output_widget = OutputWidget()
         self._main_splitter = self._make_main_splitter()
         self.setCentralWidget(self._main_splitter)
-        self._set_editor_lexer()
+        self._populate_languages_combobox()
+        self._editor_index_map: dict[int, int] = {}
+        self.switch_editor()
         self._restore_window_state()
+        self._languages_combo_box.currentIndexChanged.connect(self.switch_editor)
         QShortcut(QKeySequence("Ctrl+r"), self).activated.connect(self.on_run)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
@@ -47,7 +51,8 @@ class MainWindow(QMainWindow):
 
     def on_run(self) -> None:
         """Callback to run code from the editor."""
-        editor_text = self._editor.text()
+        current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
+        editor_text = current_editor.text()
         current_language_profile = self._languages_combo_box.currentData()
         stdout, stderr = get_output(current_language_profile, editor_text)
         self._output_widget.setText("")
@@ -64,10 +69,23 @@ class MainWindow(QMainWindow):
         if stdout:
             self._output_widget.append(stdout)
 
+    def switch_editor(self) -> None:
+        """Switches to the editor instance pointed to by the languages combobox."""
+        self._output_widget.clear()
+        language_index = self._languages_combo_box.currentIndex()
+        editor_index = self._editor_index_map.get(language_index)
+        if editor_index is None:
+            editor_index = len(self._editor_index_map)
+            self._editor_index_map[language_index] = editor_index
+        if editor_index < self._editors_layout.count():
+            self._editors_layout.setCurrentIndex(editor_index)
+            return
+        self._editors_layout.addWidget(Editor())
+        self._set_editor_lexer()
+        self._editors_layout.setCurrentIndex(editor_index)
+
     def _make_main_splitter(self) -> QSplitter:
         """Create and return the main splitter widget for this window."""
-        for language_profile in get_language_profiles():
-            self._languages_combo_box.addItem(language_profile.name, language_profile)
         self._languages_combo_box.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
         top_row_spacer = QWidget()
         top_row_spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
@@ -77,21 +95,28 @@ class MainWindow(QMainWindow):
         top_row_layout.addWidget(top_row_spacer)
         top_row_container = QWidget()
         top_row_container.setLayout(top_row_layout)
-        editor_layout = QVBoxLayout()
-        editor_layout.setContentsMargins(QMargins())
-        editor_layout.addWidget(top_row_container)
-        editor_layout.addWidget(self._editor)
-        editor_container = QWidget()
-        editor_container.setLayout(editor_layout)
-        output_layout = QVBoxLayout()
-        output_layout.setContentsMargins(QMargins())
-        output_layout.addWidget(self._output_widget)
-        output_container = QWidget()
-        output_container.setLayout(output_layout)
+        editors_container = QWidget()
+        editors_container.setLayout(self._editors_layout)
+        splitter_top_layout = QVBoxLayout()
+        splitter_top_layout.setContentsMargins(QMargins())
+        splitter_top_layout.addWidget(top_row_container)
+        splitter_top_layout.addWidget(editors_container)
+        splitter_top_container = QWidget()
+        splitter_top_container.setLayout(splitter_top_layout)
+        splitter_bottom_layout = QVBoxLayout()
+        splitter_bottom_layout.setContentsMargins(QMargins())
+        splitter_bottom_layout.addWidget(self._output_widget)
+        splitter_bottom_container = QWidget()
+        splitter_bottom_container.setLayout(splitter_bottom_layout)
         splitter = UniformSplitter(Qt.Orientation.Vertical)
-        splitter.addWidget(editor_container)
-        splitter.addWidget(output_container)
+        splitter.addWidget(splitter_top_container)
+        splitter.addWidget(splitter_bottom_container)
         return splitter
+
+    def _populate_languages_combobox(self) -> None:
+        """Add all language profiles to the languages combobox."""
+        for language_profile in get_language_profiles():
+            self._languages_combo_box.addItem(language_profile.name, language_profile)
 
     def _restore_window_state(self) -> None:
         """
@@ -120,14 +145,20 @@ class MainWindow(QMainWindow):
         settings.endGroup()
 
     def _set_editor_lexer(self) -> None:
+        """
+        Set lexer for the current editor.
+
+        This only needs to be done once per editor widget instance.
+        """
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
+        current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
         lexer_class = get_lexer_class(current_language_profile.language_id)
         if lexer_class is None:
             return
         lexer = lexer_class()
         lexer.setPaper(self.palette().color(QPalette.ColorRole.Base))
         lexer.setColor(self.palette().color(QPalette.ColorRole.Text))
-        lexer.setFont(self._editor.font())
+        lexer.setFont(current_editor.font())
         for style_id, color_hex in self._theme.get_lexer_color_map(current_language_profile.language_id).items():
             lexer.setColor(QColor(color_hex), style_id)
-        self._editor.setLexer(lexer)
+        current_editor.setLexer(lexer)
