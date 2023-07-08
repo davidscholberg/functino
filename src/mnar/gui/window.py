@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         self._theme = theme
         self._icon_set = icon_set
         self._languages_combo_box = QComboBox()
+        self._languages_combo_box.setToolTip("Select Language Profile")
         self._run_button = QPushButton()
         self._run_button.setToolTip("Run (Ctrl+r)")
         self._editors_layout = QStackedLayout()
