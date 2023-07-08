@@ -1,11 +1,12 @@
 from typing import cast
 
 from PyQt6.QtCore import QMargins, QSettings, Qt
-from PyQt6.QtGui import QCloseEvent, QColor, QFont, QKeySequence, QPalette, QShortcut
-from PyQt6.QtWidgets import QComboBox, QFrame, QHBoxLayout, QLabel, QMainWindow, QStackedLayout, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
+from PyQt6.QtGui import QCloseEvent, QColor, QIcon, QKeySequence, QPalette, QShortcut
+from PyQt6.QtWidgets import QPushButton, QComboBox, QFrame, QHBoxLayout, QMainWindow, QStackedLayout, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
+from mnar.gui.icon import IconSet
 from mnar.gui.language import get_lexer_class
 from mnar.gui.theme import Theme, get_uniform_palette
 from mnar.language import LanguageProfile, get_language_profiles
@@ -29,11 +30,14 @@ class OutputWidget(QTextEdit):
 
 class MainWindow(QMainWindow):
     """Main window for this application."""
-    def __init__(self, theme: Theme) -> None:
+    def __init__(self, theme: Theme, icon_set: IconSet) -> None:
         super().__init__()
         self.setWindowTitle("Mnar")
         self._theme = theme
+        self._icon_set = icon_set
         self._languages_combo_box = QComboBox()
+        self._run_button = QPushButton()
+        self._run_button.setToolTip("Run (Ctrl+r)")
         self._editors_layout = QStackedLayout()
         self._output_widget = OutputWidget()
         self._main_splitter = self._make_main_splitter()
@@ -43,6 +47,7 @@ class MainWindow(QMainWindow):
         self._editor_index_map: dict[int, int] = {}
         self.switch_editor()
         self._languages_combo_box.currentIndexChanged.connect(self.switch_editor)
+        self._run_button.clicked.connect(self.on_run)
         QShortcut(QKeySequence("Ctrl+r"), self).activated.connect(self.on_run)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
@@ -89,11 +94,13 @@ class MainWindow(QMainWindow):
     def _make_main_splitter(self) -> QSplitter:
         """Create and return the main splitter widget for this window."""
         self._languages_combo_box.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        self._run_button.setIcon(QIcon(str(self._icon_set.play_path)))
         top_row_spacer = QWidget()
         top_row_spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         top_row_layout = QHBoxLayout()
         top_row_layout.setContentsMargins(QMargins())
         top_row_layout.addWidget(self._languages_combo_box)
+        top_row_layout.addWidget(self._run_button)
         top_row_layout.addWidget(top_row_spacer)
         top_row_container = QWidget()
         top_row_container.setLayout(top_row_layout)
