@@ -14,6 +14,10 @@ class Editor(QsciScintilla):
         self.setMarginsForegroundColor(Qt.GlobalColor.darkGray)
         self.setMarginLineNumbers(0, True)
         self.setMarginWidth(1, 0)
+        self.setIndentationsUseTabs(False)
+        self.setIndentationWidth(4)
+        self.setAutoIndent(True)
+        self.setBackspaceUnindents(True)
         self._lexer_copy = None
 
     def setFont(self, f: QFont) -> None:
