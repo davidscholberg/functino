@@ -1,8 +1,8 @@
 from typing import cast
 
 from PyQt6.QtCore import QMargins, QSettings, Qt
-from PyQt6.QtGui import QCloseEvent, QColor, QIcon, QKeySequence, QPalette, QShortcut
-from PyQt6.QtWidgets import QPushButton, QComboBox, QFrame, QHBoxLayout, QMainWindow, QStackedLayout, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
+from PyQt6.QtGui import QCloseEvent, QColor, QFont, QIcon, QKeySequence, QPalette, QShortcut
+from PyQt6.QtWidgets import QPushButton, QComboBox, QFontDialog, QFrame, QHBoxLayout, QMainWindow, QStackedLayout, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
 
 from mnar.execute import get_output
 from mnar.gui.editor import Editor
@@ -39,6 +39,7 @@ class MainWindow(QMainWindow):
         self._languages_combo_box.setToolTip("Select Language Profile")
         self._run_button = QPushButton()
         self._run_button.setToolTip("Run (Ctrl+r)")
+        self._settings_button = QPushButton()
         self._editors_layout = QStackedLayout()
         self._output_widget = OutputWidget()
         self._main_splitter = self._make_main_splitter()
@@ -50,6 +51,7 @@ class MainWindow(QMainWindow):
         self._languages_combo_box.currentIndexChanged.connect(self.switch_editor)
         self._run_button.clicked.connect(self.on_run)
         QShortcut(QKeySequence("Ctrl+r"), self).activated.connect(self.on_run)
+        self._settings_button.clicked.connect(self.on_settings_click)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         """Handle window closed event."""
@@ -76,6 +78,17 @@ class MainWindow(QMainWindow):
         if stdout:
             self._output_widget.append(stdout)
 
+    def on_settings_click(self) -> None:
+        """Handles settings button click."""
+        new_font, _ = QFontDialog.getFont(self._output_widget.font())
+        for i in range(self._editors_layout.count()):
+            editor: Editor = cast(Editor, self._editors_layout.widget(i))
+            editor.setFont(new_font)
+            lexer = editor.lexer()
+            if lexer is not None:
+                lexer.setFont(new_font)
+        self._output_widget.setFont(new_font)
+
     def switch_editor(self) -> None:
         """Switches to the editor instance pointed to by the languages combobox."""
         self._output_widget.clear()
@@ -87,7 +100,9 @@ class MainWindow(QMainWindow):
         if editor_index < self._editors_layout.count():
             self._editors_layout.setCurrentIndex(editor_index)
             return
-        self._editors_layout.addWidget(Editor())
+        editor = Editor()
+        editor.setFont(self._output_widget.font())
+        self._editors_layout.addWidget(editor)
         self._editors_layout.setCurrentIndex(editor_index)
         self._set_editor_lexer()
         self._restore_editor_text()
@@ -96,12 +111,14 @@ class MainWindow(QMainWindow):
         """Create and return the main splitter widget for this window."""
         self._languages_combo_box.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
         self._run_button.setIcon(QIcon(str(self._icon_set.play_path)))
+        self._settings_button.setIcon(QIcon(str(self._icon_set.settings_path)))
         top_row_spacer = QWidget()
         top_row_spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         top_row_layout = QHBoxLayout()
         top_row_layout.setContentsMargins(QMargins())
         top_row_layout.addWidget(self._languages_combo_box)
         top_row_layout.addWidget(self._run_button)
+        top_row_layout.addWidget(self._settings_button)
         top_row_layout.addWidget(top_row_spacer)
         top_row_container = QWidget()
         top_row_container.setLayout(top_row_layout)
@@ -167,6 +184,12 @@ class MainWindow(QMainWindow):
                 if previous_language_profile_name == language_profile.name:
                     self._languages_combo_box.setCurrentIndex(language_index)
                     break
+        if settings.contains("font"):
+            saved_font = QFont()
+            saved_font.fromString(settings.value("font"))
+            self._output_widget.setFont(saved_font)
+        else:
+            self._output_widget.setFont(QFont("Consolas", 11))
         settings.endGroup()
 
     def _save_window_state(self) -> None:
@@ -180,6 +203,7 @@ class MainWindow(QMainWindow):
         settings.setValue("splitter_state", self._main_splitter.saveState())
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
         settings.setValue("language_selection", current_language_profile.name)
+        settings.setValue("font", self._output_widget.font().toString())
         settings.beginGroup("editor_text")
         for language_index in range(self._languages_combo_box.count()):
             if language_index not in self._editor_index_map:
@@ -204,7 +228,7 @@ class MainWindow(QMainWindow):
         lexer = lexer_class()
         lexer.setPaper(self.palette().color(QPalette.ColorRole.Base))
         lexer.setColor(self.palette().color(QPalette.ColorRole.Text))
-        lexer.setFont(current_editor.font())
+        lexer.setFont(self._output_widget.font())
         for style_id, color_hex in self._theme.get_lexer_color_map(current_language_profile.language_id).items():
             lexer.setColor(QColor(color_hex), style_id)
         current_editor.setLexer(lexer)
