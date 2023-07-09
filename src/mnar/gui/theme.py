@@ -57,7 +57,16 @@ def get_themed_palette(theme: Theme, palette: QPalette) -> QPalette:
     return themed_palette
 
 def get_uniform_palette(palette: QPalette) -> QPalette:
-    """Create a palette based on the given one with more uniform colors."""
+    """
+    Create a palette based on the given one with more uniform colors.
+
+    The goal with this palette is to make widgets blend together better and to
+    prevent widgets from displaying different colors when the window is out of
+    focus.
+    """
     uniform_palette = QPalette(palette)
+    uniform_palette.setColor(QPalette.ColorRole.Base, palette.color(QPalette.ColorRole.Base))
+    uniform_palette.setColor(QPalette.ColorRole.Button, palette.color(QPalette.ColorRole.Button))
+    uniform_palette.setColor(QPalette.ColorRole.ButtonText, palette.color(QPalette.ColorRole.ButtonText))
     uniform_palette.setColor(QPalette.ColorRole.Window, palette.color(QPalette.ColorRole.Base))
     return uniform_palette
