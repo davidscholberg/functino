@@ -8,7 +8,7 @@ def get_lexer_class(language_id: str) -> Type[QsciLexer] | None:
     lexer class found.
     """
     match language_id:
-        case "cpp":
+        case "c" | "cpp":
             return QsciLexerCPP
         case "python":
             return QsciLexerPython
