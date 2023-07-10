@@ -219,6 +219,10 @@ class MainWindow(QMainWindow):
         Set lexer for the current editor.
 
         This only needs to be done once per editor widget instance.
+
+        Note that currently the background colors of the themes are ignored;
+        only the foreground colors are used. The background colors come from the
+        window palette.
         """
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
         current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
