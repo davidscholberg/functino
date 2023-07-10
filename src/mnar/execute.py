@@ -14,10 +14,10 @@ def get_output(language_profile: LanguageProfile, code: str) -> tuple[str, str]:
     fails, the results of the compilation will be returned.
     """
     with TemporaryDirectory() as temp_dir_path:
-        source_file_path = write_to_tmp_file(code, temp_dir_path)
+        source_file_path = write_to_tmp_file(code, language_profile.source_file_extension, temp_dir_path)
         executable_file_path: str | None = None
         if language_profile.compile:
-            fd, executable_file_path = mkstemp(dir=temp_dir_path)
+            fd, executable_file_path = mkstemp(dir=temp_dir_path, suffix=".exe")
             os.close(fd)
         command = language_profile.generate_command(source_file_path, executable_file_path)
         result = subprocess.run(command, capture_output=True, shell=False)

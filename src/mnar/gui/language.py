@@ -1,6 +1,6 @@
 from typing import Type
 
-from PyQt6.Qsci import QsciLexer, QsciLexerPython
+from PyQt6.Qsci import QsciLexer, QsciLexerCPP, QsciLexerPython
 
 def get_lexer_class(language_id: str) -> Type[QsciLexer] | None:
     """
@@ -8,6 +8,8 @@ def get_lexer_class(language_id: str) -> Type[QsciLexer] | None:
     lexer class found.
     """
     match language_id:
+        case "cpp":
+            return QsciLexerCPP
         case "python":
             return QsciLexerPython
         case _:

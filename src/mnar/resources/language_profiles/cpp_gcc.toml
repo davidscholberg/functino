@@ -1,0 +1,7 @@
+name = "C++ (gcc)"
+language_id = "cpp"
+source_file_extension = "cpp"
+compile = true
+
+[command]
+default = ["g++", "{source_file_path}", "-o", "{executable_path}"]

@@ -16,6 +16,7 @@ class LanguageProfile:
             profile_data = tomllib.load(f)
             self._name: str = profile_data["name"]
             self._language_id: str = profile_data["language_id"]
+            self._source_file_extension: str = profile_data["source_file_extension"]
             self._compile: bool = profile_data["compile"]
             self._command: tuple[str] = tuple(profile_data["command"]["default"])
             this_system = platform.system()
@@ -42,6 +43,15 @@ class LanguageProfile:
         return self._language_id
 
     @property
+    def source_file_extension(self) -> str:
+        """
+        The file extension used for source files of this language.
+
+        These extensions should omit the precending period.
+        """
+        return self._source_file_extension
+
+    @property
     def compile(self) -> bool:
         """
         Whether or not this profile requires separate compilation and execution
@@ -56,7 +66,7 @@ class LanguageProfile:
         """
         return self._command
 
-    def generate_command(self, file_path: str, executable_path: str | None = None) -> tuple[str]:
+    def generate_command(self, source_file_path: str, executable_path: str | None = None) -> tuple[str]:
         """
         Generate command tuple from this profile's template.
 
@@ -69,17 +79,17 @@ class LanguageProfile:
         if not self._compile and executable_path is not None:
             raise RuntimeError("executable path must not be set for non-compile profiles")
         command_args = []
-        file_path_template_found = False
+        source_file_path_template_found = False
         executable_path_template_found = False
         for arg in self._command:
-            if arg == r"{file_path}":
-                arg = arg.format(file_path=file_path)
-                file_path_template_found = True
+            if arg == r"{source_file_path}":
+                arg = arg.format(source_file_path=source_file_path)
+                source_file_path_template_found = True
             elif self._compile and arg == r"{executable_path}":
                 arg = arg.format(executable_path=executable_path)
                 executable_path_template_found = True
             command_args.append(arg)
-        if not file_path_template_found:
+        if not source_file_path_template_found:
             raise RuntimeError("command template did not contain a file path template")
         if self._compile and not executable_path_template_found:
             raise RuntimeError("command template did not contain an executable path template")

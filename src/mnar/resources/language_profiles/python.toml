@@ -1,8 +1,9 @@
 name = "Python"
 language_id = "python"
+source_file_extension = "py"
 compile = false
 
 [command]
-default = ["python", "{file_path}"]
+default = ["python", "{source_file_path}"]
 # On windows we have to use pythonw to prevent the console window from popping up.
-Windows = ["pythonw", "{file_path}"]
+Windows = ["pythonw", "{source_file_path}"]
