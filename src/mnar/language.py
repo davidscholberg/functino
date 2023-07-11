@@ -1,8 +1,11 @@
+from itertools import chain
+import os
 from pathlib import Path
 import platform
 import tomllib
 
-from mnar.project_path import get_language_profile_paths
+from mnar.platform_path import get_user_language_profiles_path
+from mnar.project_path import get_built_in_language_profiles_path
 
 class LanguageProfile:
     """
@@ -103,3 +106,22 @@ def get_language_profiles() -> tuple[LanguageProfile]:
         if language_profiles[i].name == language_profiles[i + 1].name:
             raise RuntimeError(f"language profile names must all be unique (duplicate name: {language_profiles[i].name})")
     return tuple(language_profiles)
+
+def get_language_profile_paths() -> tuple[Path]:
+    """
+    Get paths of all language profiles.
+
+    Language profiles can be built-in and can also be found in the user-specific
+    profiles directory.
+    """
+    built_in_profiles_dir = get_built_in_language_profiles_path()
+    user_profiles_dir = get_user_language_profiles_path()
+    os.makedirs(user_profiles_dir, mode=0o755, exist_ok=True)
+    return tuple(
+        chain.from_iterable(
+            map(
+                lambda d: d.glob("*.toml"),
+                (built_in_profiles_dir, user_profiles_dir)
+            )
+        )
+    )
