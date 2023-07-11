@@ -175,7 +175,7 @@ class MainWindow(QMainWindow):
         if settings.contains("splitter_state"):
             self._main_splitter.restoreState(settings.value("splitter_state"))
         else:
-            self._main_splitter.setStretchFactor(0, 2)
+            self._main_splitter.setStretchFactor(0, 20)
             self._main_splitter.setStretchFactor(1, 1)
         if settings.contains("language_selection"):
             previous_language_profile_name = settings.value("language_selection")
