@@ -1,14 +1,13 @@
 from pathlib import Path
 
-from platformdirs import PlatformDirs, PlatformDirsABC
-
-def get_platformdirs() -> PlatformDirsABC:
-    """Get the PlatformDirs object for this application."""
-    return PlatformDirs("mnar", "davidscholberg")
+from PyQt6.QtCore import QStandardPaths
 
 def get_user_config_path() -> Path:
     """Get user configuration directory for this application."""
-    return Path(get_platformdirs().user_config_dir)
+    user_config_path_str = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppConfigLocation)
+    if user_config_path_str == "":
+        raise RuntimeError("could not determine user config path for this application")
+    return Path(user_config_path_str)
 
 def get_user_language_profiles_path() -> Path:
     """Get path of user language profiles directory."""
