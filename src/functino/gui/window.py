@@ -67,7 +67,11 @@ class MainWindow(QMainWindow):
         if current_language_profile is None:
             pop_up_error_message("no language profile loaded")
             return
-        stdout, stderr = get_output(current_language_profile, editor_text)
+        try:
+            stdout, stderr = get_output(current_language_profile, editor_text)
+        except Exception as e:
+            pop_up_error_message(e)
+            return
         self._output_widget.setText("")
         if not stderr and not stdout:
             text_color_hex = QColor(Qt.GlobalColor.darkGray).name(QColor.NameFormat.HexArgb)
