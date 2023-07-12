@@ -13,7 +13,7 @@ def get_icons_path() -> Path:
     return get_resources_path() / "icons"
 
 def get_built_in_language_profiles_path() -> Path:
-    """Get path of language profiles directory."""
+    """Get path of built-in language profiles directory."""
     return get_resources_path() / "language_profiles"
 
 def get_themes_path() -> Path:
