@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mnar"
+name = "functino"
 version = "0.0.1"
 authors = [
     { name="David Scholberg", email="recombinant.vector@gmail.com" },
@@ -16,7 +16,7 @@ dependencies = [
 
 # This is mainly for debugging on windows so that we can see stderr.
 [project.scripts]
-mnarc = "mnar.gui:run"
+functinoc = "functino.gui:run"
 
 [project.gui-scripts]
-mnar = "mnar.gui:run"
+functino = "functino.gui:run"

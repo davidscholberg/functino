@@ -4,8 +4,8 @@ from pathlib import Path
 import platform
 import tomllib
 
-from mnar.platform_path import get_user_language_profiles_path
-from mnar.project_path import get_built_in_language_profiles_path
+from functino.platform_path import get_user_language_profiles_path
+from functino.project_path import get_built_in_language_profiles_path
 
 class LanguageProfile:
     """

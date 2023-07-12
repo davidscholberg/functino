@@ -1,5 +1,5 @@
 from pathlib import Path
-from mnar.project_path import get_icons_path
+from functino.project_path import get_icons_path
 
 class IconSet:
     """Manages paths to icons based on color mode."""

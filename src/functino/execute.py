@@ -3,8 +3,8 @@ import subprocess
 from tempfile import TemporaryDirectory, mkstemp
 from typing import cast
 
-from mnar.file import write_to_tmp_file
-from mnar.language import LanguageProfile
+from functino.file import write_to_tmp_file
+from functino.language import LanguageProfile
 
 def get_output(language_profile: LanguageProfile, code: str) -> tuple[str, str]:
     """

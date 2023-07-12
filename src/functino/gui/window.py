@@ -4,12 +4,12 @@ from PyQt6.QtCore import QMargins, QSettings, Qt
 from PyQt6.QtGui import QCloseEvent, QColor, QFont, QIcon, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import QPushButton, QComboBox, QFontDialog, QFrame, QHBoxLayout, QMainWindow, QStackedLayout, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
 
-from mnar.execute import get_output
-from mnar.gui.editor import Editor
-from mnar.gui.icon import IconSet
-from mnar.gui.language import get_lexer_class
-from mnar.gui.theme import Theme, get_uniform_palette
-from mnar.language import LanguageProfile, get_language_profiles
+from functino.execute import get_output
+from functino.gui.editor import Editor
+from functino.gui.icon import IconSet
+from functino.gui.language import get_lexer_class
+from functino.gui.theme import Theme, get_uniform_palette
+from functino.language import LanguageProfile, get_language_profiles
 
 class UniformSplitter(QSplitter):
     """QSplitter with uniform styling."""
@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
     """Main window for this application."""
     def __init__(self, theme: Theme, icon_set: IconSet) -> None:
         super().__init__()
-        self.setWindowTitle("Mnar")
+        self.setWindowTitle("Functino")
         self._theme = theme
         self._icon_set = icon_set
         self._languages_combo_box = QComboBox()

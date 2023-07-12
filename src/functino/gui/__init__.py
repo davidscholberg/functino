@@ -2,16 +2,15 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QStyleHints
 from PyQt6.QtWidgets import QApplication
 
-from mnar.gui.icon import IconSet
-from mnar.gui.theme import Theme
-from mnar.gui.window import MainWindow
-from mnar.project_path import get_themes_path
+from functino.gui.icon import IconSet
+from functino.gui.theme import Theme
+from functino.gui.window import MainWindow
+from functino.project_path import get_themes_path
 
 def run() -> None:
     """Create and display the application window."""
     app = QApplication([])
-    app.setOrganizationName("davidscholberg")
-    app.setApplicationName("mnar")
+    app.setApplicationName("functino")
     app.setStyle("fusion")
     theme = None
     icon_set = None
