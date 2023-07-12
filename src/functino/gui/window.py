@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QPushButton, QComboBox, QFontDialog, QFrame, QHBoxLa
 
 from functino.execute import get_output
 from functino.gui.editor import Editor
+from functino.gui.exception import pop_up_error_message
 from functino.gui.icon import IconSet
 from functino.gui.language import get_lexer_class
 from functino.gui.theme import Theme, get_uniform_palette
@@ -63,6 +64,9 @@ class MainWindow(QMainWindow):
         current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
         editor_text = current_editor.text()
         current_language_profile = self._languages_combo_box.currentData()
+        if current_language_profile is None:
+            pop_up_error_message("no language profile loaded")
+            return
         stdout, stderr = get_output(current_language_profile, editor_text)
         self._output_widget.setText("")
         if not stderr and not stdout:
@@ -143,8 +147,11 @@ class MainWindow(QMainWindow):
 
     def _populate_languages_combobox(self) -> None:
         """Add all language profiles to the languages combobox."""
-        for language_profile in get_language_profiles():
-            self._languages_combo_box.addItem(language_profile.name, language_profile)
+        try:
+            for language_profile in get_language_profiles():
+                self._languages_combo_box.addItem(language_profile.name, language_profile)
+        except Exception as e:
+            pop_up_error_message(e)
 
     def _restore_editor_text(self) -> None:
         """Restore any saved editor text for the current language profile."""
@@ -152,7 +159,7 @@ class MainWindow(QMainWindow):
         settings.beginGroup("main_window")
         settings.beginGroup("editor_text")
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
-        if settings.contains(current_language_profile.name):
+        if current_language_profile is not None and settings.contains(current_language_profile.name):
             current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
             current_editor.setText(settings.value(current_language_profile.name))
         settings.endGroup()
@@ -203,7 +210,8 @@ class MainWindow(QMainWindow):
         settings.setValue("window_geometry", self.saveGeometry())
         settings.setValue("splitter_state", self._main_splitter.saveState())
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
-        settings.setValue("language_selection", current_language_profile.name)
+        if current_language_profile is not None:
+            settings.setValue("language_selection", current_language_profile.name)
         settings.setValue("font", self._output_widget.font().toString())
         settings.beginGroup("editor_text")
         for language_index in range(self._languages_combo_box.count()):
@@ -226,6 +234,8 @@ class MainWindow(QMainWindow):
         window palette.
         """
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
+        if current_language_profile is None:
+            return
         current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
         lexer_class = get_lexer_class(current_language_profile.language_id)
         if lexer_class is None:
