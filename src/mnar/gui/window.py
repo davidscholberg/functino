@@ -69,7 +69,6 @@ class MainWindow(QMainWindow):
             text_color_hex = QColor(Qt.GlobalColor.darkGray).name(QColor.NameFormat.HexArgb)
             html = f"<span style=\"color:{text_color_hex}\"><em>no output</em></span>"
             self._output_widget.setHtml(html)
-            return
         if stderr:
             original_text_color = self._output_widget.palette().color(QPalette.ColorRole.Text)
             self._output_widget.setTextColor(Qt.GlobalColor.red)
@@ -77,6 +76,8 @@ class MainWindow(QMainWindow):
             self._output_widget.setTextColor(original_text_color)
         if stdout:
             self._output_widget.append(stdout)
+        scrollbar = self._output_widget.verticalScrollBar()
+        scrollbar.setValue(scrollbar.minimum())
 
     def on_settings_click(self) -> None:
         """Handles settings button click."""
