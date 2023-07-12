@@ -10,6 +10,7 @@ from functino.project_path import get_themes_path
 def run() -> None:
     """Create and display the application window."""
     app = QApplication([])
+    app.setOrganizationName("functinodev")
     app.setApplicationName("functino")
     app.setStyle("fusion")
     theme = None
