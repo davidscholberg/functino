@@ -240,7 +240,11 @@ class MainWindow(QMainWindow):
         current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
         if current_language_profile is None:
             return
-        current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
+        try:
+            lexer_color_map = self._theme.get_lexer_color_map(current_language_profile.language_id)
+        except Exception as e:
+            pop_up_error_message(e)
+            return
         lexer_class = get_lexer_class(current_language_profile.language_id)
         if lexer_class is None:
             return
@@ -248,6 +252,7 @@ class MainWindow(QMainWindow):
         lexer.setPaper(self.palette().color(QPalette.ColorRole.Base))
         lexer.setColor(self.palette().color(QPalette.ColorRole.Text))
         lexer.setFont(self._output_widget.font())
-        for style_id, color_hex in self._theme.get_lexer_color_map(current_language_profile.language_id).items():
+        for style_id, color_hex in lexer_color_map.items():
             lexer.setColor(QColor(color_hex), style_id)
+        current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
         current_editor.setLexer(lexer)
