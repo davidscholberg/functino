@@ -10,6 +10,7 @@ from functino.gui.theme import Theme
 from functino.gui.window import MainWindow
 from functino.project_path import get_themes_path
 
+
 def run() -> None:
     """Create and display the application window."""
     app = QApplication([])

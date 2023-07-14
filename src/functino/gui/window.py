@@ -1,8 +1,29 @@
 from typing import cast
 
 from PyQt6.QtCore import QMargins, QSettings, Qt
-from PyQt6.QtGui import QCloseEvent, QColor, QFont, QIcon, QKeySequence, QPalette, QShortcut
-from PyQt6.QtWidgets import QPushButton, QComboBox, QFontDialog, QFrame, QHBoxLayout, QMainWindow, QStackedLayout, QTextEdit, QSizePolicy, QSplitter, QVBoxLayout, QWidget
+from PyQt6.QtGui import (
+    QCloseEvent,
+    QColor,
+    QFont,
+    QIcon,
+    QKeySequence,
+    QPalette,
+    QShortcut,
+)
+from PyQt6.QtWidgets import (
+    QPushButton,
+    QComboBox,
+    QFontDialog,
+    QFrame,
+    QHBoxLayout,
+    QMainWindow,
+    QStackedLayout,
+    QTextEdit,
+    QSizePolicy,
+    QSplitter,
+    QVBoxLayout,
+    QWidget,
+)
 
 from functino.execute import get_output
 from functino.gui.editor import Editor
@@ -12,15 +33,19 @@ from functino.gui.language import get_lexer_class
 from functino.gui.theme import Theme, get_uniform_palette
 from functino.language import LanguageProfile, get_language_profiles
 
+
 class UniformSplitter(QSplitter):
     """QSplitter with uniform styling."""
+
     def __init__(self, orientation: Qt.Orientation) -> None:
         super().__init__(orientation)
         self.setPalette(get_uniform_palette(self.palette()))
         self.setAutoFillBackground(True)
 
+
 class OutputWidget(QTextEdit):
     """Widget for displaying the results of executing the code in the editor."""
+
     def __init__(self) -> None:
         super().__init__()
         self.setReadOnly(True)
@@ -29,8 +54,10 @@ class OutputWidget(QTextEdit):
         font.setPointSize(12)
         self.setFont(font)
 
+
 class MainWindow(QMainWindow):
     """Main window for this application."""
+
     def __init__(self, theme: Theme, icon_set: IconSet) -> None:
         super().__init__()
         self.setWindowTitle("Functino")
@@ -74,11 +101,15 @@ class MainWindow(QMainWindow):
             return
         self._output_widget.setText("")
         if not stderr and not stdout:
-            text_color_hex = QColor(Qt.GlobalColor.darkGray).name(QColor.NameFormat.HexArgb)
-            html = f"<span style=\"color:{text_color_hex}\"><em>no output</em></span>"
+            text_color_hex = QColor(Qt.GlobalColor.darkGray).name(
+                QColor.NameFormat.HexArgb
+            )
+            html = f'<span style="color:{text_color_hex}"><em>no output</em></span>'
             self._output_widget.setHtml(html)
         if stderr:
-            original_text_color = self._output_widget.palette().color(QPalette.ColorRole.Text)
+            original_text_color = self._output_widget.palette().color(
+                QPalette.ColorRole.Text
+            )
             self._output_widget.setTextColor(Qt.GlobalColor.red)
             self._output_widget.append(stderr)
             self._output_widget.setTextColor(original_text_color)
@@ -118,11 +149,15 @@ class MainWindow(QMainWindow):
 
     def _make_main_splitter(self) -> QSplitter:
         """Create and return the main splitter widget for this window."""
-        self._languages_combo_box.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        self._languages_combo_box.setSizePolicy(
+            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
+        )
         self._run_button.setIcon(QIcon(str(self._icon_set.play_path)))
         self._settings_button.setIcon(QIcon(str(self._icon_set.settings_path)))
         top_row_spacer = QWidget()
-        top_row_spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        top_row_spacer.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+        )
         top_row_layout = QHBoxLayout()
         top_row_layout.setContentsMargins(QMargins())
         top_row_layout.addWidget(self._languages_combo_box)
@@ -153,7 +188,9 @@ class MainWindow(QMainWindow):
         """Add all language profiles to the languages combobox."""
         try:
             for language_profile in get_language_profiles():
-                self._languages_combo_box.addItem(language_profile.name, language_profile)
+                self._languages_combo_box.addItem(
+                    language_profile.name, language_profile
+                )
         except Exception as e:
             pop_up_error_message(e)
 
@@ -162,8 +199,12 @@ class MainWindow(QMainWindow):
         settings = QSettings()
         settings.beginGroup("main_window")
         settings.beginGroup("editor_text")
-        current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
-        if current_language_profile is not None and settings.contains(current_language_profile.name):
+        current_language_profile: LanguageProfile = (
+            self._languages_combo_box.currentData()
+        )
+        if current_language_profile is not None and settings.contains(
+            current_language_profile.name
+        ):
             current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
             current_editor.setText(settings.value(current_language_profile.name))
         settings.endGroup()
@@ -192,7 +233,9 @@ class MainWindow(QMainWindow):
         if settings.contains("language_selection"):
             previous_language_profile_name = settings.value("language_selection")
             for language_index in range(self._languages_combo_box.count()):
-                language_profile: LanguageProfile = self._languages_combo_box.itemData(language_index)
+                language_profile: LanguageProfile = self._languages_combo_box.itemData(
+                    language_index
+                )
                 if previous_language_profile_name == language_profile.name:
                     self._languages_combo_box.setCurrentIndex(language_index)
                     break
@@ -213,7 +256,9 @@ class MainWindow(QMainWindow):
         settings.beginGroup("main_window")
         settings.setValue("window_geometry", self.saveGeometry())
         settings.setValue("splitter_state", self._main_splitter.saveState())
-        current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
+        current_language_profile: LanguageProfile = (
+            self._languages_combo_box.currentData()
+        )
         if current_language_profile is not None:
             settings.setValue("language_selection", current_language_profile.name)
         settings.setValue("font", self._output_widget.font().toString())
@@ -221,8 +266,13 @@ class MainWindow(QMainWindow):
         for language_index in range(self._languages_combo_box.count()):
             if language_index not in self._editor_index_map:
                 continue
-            language_profile: LanguageProfile = self._languages_combo_box.itemData(language_index)
-            editor: Editor = cast(Editor, self._editors_layout.widget(self._editor_index_map[language_index]))
+            language_profile: LanguageProfile = self._languages_combo_box.itemData(
+                language_index
+            )
+            editor: Editor = cast(
+                Editor,
+                self._editors_layout.widget(self._editor_index_map[language_index]),
+            )
             settings.setValue(language_profile.name, editor.text())
         settings.endGroup()
         settings.endGroup()
@@ -237,11 +287,15 @@ class MainWindow(QMainWindow):
         only the foreground colors are used. The background colors come from the
         window palette.
         """
-        current_language_profile: LanguageProfile = self._languages_combo_box.currentData()
+        current_language_profile: LanguageProfile = (
+            self._languages_combo_box.currentData()
+        )
         if current_language_profile is None:
             return
         try:
-            lexer_color_map = self._theme.get_lexer_color_map(current_language_profile.language_id)
+            lexer_color_map = self._theme.get_lexer_color_map(
+                current_language_profile.language_id
+            )
         except Exception as e:
             pop_up_error_message(e)
             return

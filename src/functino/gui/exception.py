@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QMessageBox
 
+
 def pop_up_error_message(e: Exception | str) -> None:
     """Show an error message pop up with the given error shown."""
     message_box = QMessageBox()

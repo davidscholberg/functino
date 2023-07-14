@@ -7,6 +7,7 @@ import tomllib
 from functino.platform_path import get_user_language_profiles_path
 from functino.project_path import get_built_in_language_profiles_path
 
+
 class LanguageProfile:
     """
     Execution information for a programming language.
@@ -14,6 +15,7 @@ class LanguageProfile:
     Each instance of this class corresponds to a config file that specifies how
     to execute files for a particular language.
     """
+
     def __init__(self, profile_config_path: Path) -> None:
         with open(profile_config_path, "rb") as f:
             profile_data = tomllib.load(f)
@@ -69,7 +71,9 @@ class LanguageProfile:
         """
         return self._command
 
-    def generate_command(self, source_file_path: str, executable_path: str | None = None) -> tuple[str]:
+    def generate_command(
+        self, source_file_path: str, executable_path: str | None = None
+    ) -> tuple[str]:
         """
         Generate command tuple from this profile's template.
 
@@ -80,7 +84,9 @@ class LanguageProfile:
         if self._compile and executable_path is None:
             raise RuntimeError("executable path must be set for compile profiles")
         if not self._compile and executable_path is not None:
-            raise RuntimeError("executable path must not be set for non-compile profiles")
+            raise RuntimeError(
+                "executable path must not be set for non-compile profiles"
+            )
         command_args = []
         source_file_path_template_found = False
         executable_path_template_found = False
@@ -95,8 +101,11 @@ class LanguageProfile:
         if not source_file_path_template_found:
             raise RuntimeError("command template did not contain a file path template")
         if self._compile and not executable_path_template_found:
-            raise RuntimeError("command template did not contain an executable path template")
+            raise RuntimeError(
+                "command template did not contain an executable path template"
+            )
         return tuple(command_args)
+
 
 def get_language_profiles() -> tuple[LanguageProfile]:
     """Return tuple of all language profiles."""
@@ -104,8 +113,11 @@ def get_language_profiles() -> tuple[LanguageProfile]:
     language_profiles.sort(key=lambda l: l.name)
     for i in range(len(language_profiles) - 1):
         if language_profiles[i].name == language_profiles[i + 1].name:
-            raise RuntimeError(f"language profile names must all be unique (duplicate name: {language_profiles[i].name})")
+            raise RuntimeError(
+                f"language profile names must all be unique (duplicate name: {language_profiles[i].name})"
+            )
     return tuple(language_profiles)
+
 
 def get_language_profile_paths() -> tuple[Path]:
     """
@@ -119,9 +131,6 @@ def get_language_profile_paths() -> tuple[Path]:
     os.makedirs(user_profiles_dir, mode=0o755, exist_ok=True)
     return tuple(
         chain.from_iterable(
-            map(
-                lambda d: d.glob("*.toml"),
-                (built_in_profiles_dir, user_profiles_dir)
-            )
+            map(lambda d: d.glob("*.toml"), (built_in_profiles_dir, user_profiles_dir))
         )
     )

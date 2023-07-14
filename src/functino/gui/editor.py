@@ -4,8 +4,10 @@ from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QFont, QPalette
 from PyQt6.QtWidgets import QFrame, QWidget
 
+
 class Editor(QsciScintilla):
     """Editor widget."""
+
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setFrameStyle(QFrame.Shape.NoFrame)
@@ -58,5 +60,9 @@ class Editor(QsciScintilla):
 
     def reset_line_number_margin_width(self) -> None:
         """Recalculate line number margin width based on current font size."""
-        margin_width = self.SendScintilla(QsciScintilla.SCI_TEXTWIDTH, QsciScintilla.STYLE_LINENUMBER, sip.voidptr(b"0"))
+        margin_width = self.SendScintilla(
+            QsciScintilla.SCI_TEXTWIDTH,
+            QsciScintilla.STYLE_LINENUMBER,
+            sip.voidptr(b"0"),
+        )
         self.setMarginWidth(0, round(margin_width * 2.5))

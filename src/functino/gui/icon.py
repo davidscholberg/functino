@@ -1,8 +1,10 @@
 from pathlib import Path
 from functino.project_path import get_icons_path
 
+
 class IconSet:
     """Manages paths to icons based on color mode."""
+
     Dark = 0
     Light = 1
 
