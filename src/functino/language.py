@@ -12,8 +12,8 @@ class LanguageProfile:
     """
     Execution information for a programming language.
 
-    Each instance of this class corresponds to a config file that specifies how
-    to execute files for a particular language.
+    Each instance of this class corresponds to a config file that specifies how to
+    execute files for a particular language.
     """
 
     def __init__(self, profile_config_path: Path) -> None:
@@ -42,8 +42,7 @@ class LanguageProfile:
         """
         The ID of the language to use with this profile.
 
-        These IDs should correspond to the LexerType name attributes in the
-        theme files.
+        These IDs should correspond to the LexerType name attributes in the theme files.
         """
         return self._language_id
 
@@ -59,8 +58,7 @@ class LanguageProfile:
     @property
     def compile(self) -> bool:
         """
-        Whether or not this profile requires separate compilation and execution
-        stages.
+        Whether or not this profile requires separate compilation and execution stages.
         """
         return self._compile
 
@@ -77,9 +75,9 @@ class LanguageProfile:
         """
         Generate command tuple from this profile's template.
 
-        If the current profile requires a compilation step, executable_path must
-        be set to a writeable path. Conversely, if the current profile does not
-        require a compilation step, executable_path must be None.
+        If the current profile requires a compilation step, executable_path must be set
+        to a writeable path. Conversely, if the current profile does not require a
+        compilation step, executable_path must be None.
         """
         if self._compile and executable_path is None:
             raise RuntimeError("executable path must be set for compile profiles")
@@ -108,7 +106,9 @@ class LanguageProfile:
 
 
 def get_language_profiles() -> tuple[LanguageProfile]:
-    """Return tuple of all language profiles."""
+    """
+    Return tuple of all language profiles.
+    """
     language_profiles = list(map(LanguageProfile, get_language_profile_paths()))
     language_profiles.sort(key=lambda l: l.name)
     for i in range(len(language_profiles) - 1):

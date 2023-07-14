@@ -5,8 +5,8 @@ def write_to_tmp_file(
     contents: str, file_extension: str, directory: str | None = None
 ) -> str:
     """
-    Write given contents to temporary file (optionally in the given directory)
-    and return file path.
+    Write given contents to temporary file (optionally in the given directory) and
+    return file path.
     """
     suffix = "." + file_extension if file_extension else None
     fd, path = mkstemp(dir=directory, suffix=suffix)

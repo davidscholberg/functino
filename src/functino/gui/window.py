@@ -35,7 +35,9 @@ from functino.language import LanguageProfile, get_language_profiles
 
 
 class UniformSplitter(QSplitter):
-    """QSplitter with uniform styling."""
+    """
+    QSplitter with uniform styling.
+    """
 
     def __init__(self, orientation: Qt.Orientation) -> None:
         super().__init__(orientation)
@@ -44,7 +46,9 @@ class UniformSplitter(QSplitter):
 
 
 class OutputWidget(QTextEdit):
-    """Widget for displaying the results of executing the code in the editor."""
+    """
+    Widget for displaying the results of executing the code in the editor.
+    """
 
     def __init__(self) -> None:
         super().__init__()
@@ -56,7 +60,9 @@ class OutputWidget(QTextEdit):
 
 
 class MainWindow(QMainWindow):
-    """Main window for this application."""
+    """
+    Main window for this application.
+    """
 
     def __init__(self, theme: Theme, icon_set: IconSet) -> None:
         super().__init__()
@@ -82,12 +88,16 @@ class MainWindow(QMainWindow):
         self._settings_button.clicked.connect(self.on_settings_click)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
-        """Handle window closed event."""
+        """
+        Handle window closed event.
+        """
         self._save_window_state()
         return super().closeEvent(a0)
 
     def on_run(self) -> None:
-        """Callback to run code from the editor."""
+        """
+        Callback to run code from the editor.
+        """
         current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
         editor_text = current_editor.text()
         current_language_profile = self._languages_combo_box.currentData()
@@ -119,7 +129,9 @@ class MainWindow(QMainWindow):
         scrollbar.setValue(scrollbar.minimum())
 
     def on_settings_click(self) -> None:
-        """Handles settings button click."""
+        """
+        Handles settings button click.
+        """
         new_font, _ = QFontDialog.getFont(self._output_widget.font())
         for i in range(self._editors_layout.count()):
             editor: Editor = cast(Editor, self._editors_layout.widget(i))
@@ -130,7 +142,9 @@ class MainWindow(QMainWindow):
         self._output_widget.setFont(new_font)
 
     def switch_editor(self) -> None:
-        """Switches to the editor instance pointed to by the languages combobox."""
+        """
+        Switches to the editor instance pointed to by the languages combobox.
+        """
         self._output_widget.clear()
         language_index = self._languages_combo_box.currentIndex()
         editor_index = self._editor_index_map.get(language_index)
@@ -148,7 +162,9 @@ class MainWindow(QMainWindow):
         self._restore_editor_text()
 
     def _make_main_splitter(self) -> QSplitter:
-        """Create and return the main splitter widget for this window."""
+        """
+        Create and return the main splitter widget for this window.
+        """
         self._languages_combo_box.setSizePolicy(
             QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
         )
@@ -185,7 +201,9 @@ class MainWindow(QMainWindow):
         return splitter
 
     def _populate_languages_combobox(self) -> None:
-        """Add all language profiles to the languages combobox."""
+        """
+        Add all language profiles to the languages combobox.
+        """
         try:
             for language_profile in get_language_profiles():
                 self._languages_combo_box.addItem(
@@ -195,7 +213,9 @@ class MainWindow(QMainWindow):
             pop_up_error_message(e)
 
     def _restore_editor_text(self) -> None:
-        """Restore any saved editor text for the current language profile."""
+        """
+        Restore any saved editor text for the current language profile.
+        """
         settings = QSettings()
         settings.beginGroup("main_window")
         settings.beginGroup("editor_text")
@@ -212,12 +232,11 @@ class MainWindow(QMainWindow):
 
     def _restore_window_state(self) -> None:
         """
-        Restores window state from previous session (or sets defaults if no
-        previous session).
+        Restores window state from previous session (or sets defaults if no previous
+        session).
 
-        Note that not everything saved by _save_window_state is restored here;
-        saved code from editors is not restored until the respective editor is
-        loaded.
+        Note that not everything saved by _save_window_state is restored here; saved
+        code from editors is not restored until the respective editor is loaded.
         """
         settings = QSettings()
         settings.beginGroup("main_window")
@@ -249,8 +268,7 @@ class MainWindow(QMainWindow):
 
     def _save_window_state(self) -> None:
         """
-        Persist the state of the window (e.g. the geometry, user text contents,
-        etc.).
+        Persist the state of the window (e.g. the geometry, user text contents, etc.).
         """
         settings = QSettings()
         settings.beginGroup("main_window")
@@ -283,9 +301,8 @@ class MainWindow(QMainWindow):
 
         This only needs to be done once per editor widget instance.
 
-        Note that currently the background colors of the themes are ignored;
-        only the foreground colors are used. The background colors come from the
-        window palette.
+        Note that currently the background colors of the themes are ignored; only the
+        foreground colors are used. The background colors come from the window palette.
         """
         current_language_profile: LanguageProfile = (
             self._languages_combo_box.currentData()

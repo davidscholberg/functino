@@ -11,8 +11,8 @@ def get_output(language_profile: LanguageProfile, code: str) -> tuple[str, str]:
     """
     Write code to file, execute it, and return the stdout and stderr.
 
-    If the given language profile requires compilation and if the compilation
-    fails, the results of the compilation will be returned.
+    If the given language profile requires compilation and if the compilation fails, the
+    results of the compilation will be returned.
     """
     with TemporaryDirectory() as temp_dir_path:
         source_file_path = write_to_tmp_file(

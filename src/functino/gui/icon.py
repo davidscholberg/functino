@@ -3,7 +3,9 @@ from functino.project_path import get_icons_path
 
 
 class IconSet:
-    """Manages paths to icons based on color mode."""
+    """
+    Manages paths to icons based on color mode.
+    """
 
     Dark = 0
     Light = 1
@@ -27,10 +29,14 @@ class IconSet:
 
     @property
     def play_path(self) -> Path:
-        """Return the path to the play icon."""
+        """
+        Return the path to the play icon.
+        """
         return self._play_path
 
     @property
     def settings_path(self) -> Path:
-        """Return the path to the settings icon."""
+        """
+        Return the path to the settings icon.
+        """
         return self._settings_path
