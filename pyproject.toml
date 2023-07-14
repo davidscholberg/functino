@@ -17,6 +17,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black",
+    "pre-commit",
 ]
 
 # This is mainly for debugging on windows so that we can see stderr.
