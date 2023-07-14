@@ -1,7 +1,6 @@
 from typing import cast
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QStyleHints
 from PyQt6.QtWidgets import QApplication
 
 from functino.gui.exception import pop_up_error_message

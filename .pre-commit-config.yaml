@@ -9,3 +9,8 @@ repos:
     hooks:
       - id: docformatter
         args: [--in-place, --black, --pre-summary-newline, --make-summary-multi-line]
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        args: [--max-line-length=88, --extend-ignore=E203]

@@ -110,11 +110,14 @@ def get_language_profiles() -> tuple[LanguageProfile]:
     Return tuple of all language profiles.
     """
     language_profiles = list(map(LanguageProfile, get_language_profile_paths()))
-    language_profiles.sort(key=lambda l: l.name)
+    language_profiles.sort(key=lambda profile: profile.name)
     for i in range(len(language_profiles) - 1):
         if language_profiles[i].name == language_profiles[i + 1].name:
             raise RuntimeError(
-                f"language profile names must all be unique (duplicate name: {language_profiles[i].name})"
+                (
+                    "language profile names must all be unique"
+                    f" (duplicate name: {language_profiles[i].name})"
+                )
             )
     return tuple(language_profiles)
 
