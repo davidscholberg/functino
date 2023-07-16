@@ -1,0 +1,7 @@
+name = "NodeJS"
+language_id = "javascript.js"
+source_file_extension = "js"
+compile = false
+
+[command]
+default = ["node", "{source_file_path}"]
