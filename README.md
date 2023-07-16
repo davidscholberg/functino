@@ -25,7 +25,7 @@ pip install functino
 
 ### Configuring Support for New Languages/Toolchains
 
-If you would like to use a language or toolchain that Functino currently doesn't support, you can configure Functino to use it! The following is a [TOML] file that tells Functino how to execute Python code, with comments explaining each field:
+If you would like to use a language or toolchain that Functino currently doesn't support, you can configure Functino to use it! The following is a [TOML][toml-site] file that tells Functino how to execute Python code, with comments explaining each field:
 
 ```toml
 # This is the display name for this profile. Display names must be unique across all
@@ -81,6 +81,10 @@ You can place your custom language profiles in one of the following directories 
 * Mac: `~/Library/Preferences/functinodev/functino`
 * Windows: `C:/Users/<USER>/AppData/Local/functinodev/functino`
 
+### Known Issues
+
+* Currently there is no syntax highlighting support for Rust.
+
 ### Development Setup
 
 1. Make sure [python is installed][python-install].
@@ -113,10 +117,15 @@ pre-commit install
 
 ### Credits
 
-todo
+Functino is written in [Python][python-site] and uses [PyQt6][pyqt6-site] for all GUI functionality. Text editing and syntax highlighting functionality is provided by [QScintilla][qscintilla-site], and the syntax highlighting color themes are provided by [Notepad++][notepadpp-site] theme files.
 
 [editable-install]: https://setuptools.pypa.io/en/latest/userguide/development_mode.html
+[notepadpp-site]: https://notepad-plus-plus.org/
 [pypi-site]: https://pypi.org/
+[pyqt6-site]: https://riverbankcomputing.com/software/pyqt
 [python-install]: https://wiki.python.org/moin/BeginnersGuide/Download
+[python-site]: https://www.python.org/
 [python-venv]: https://docs.python.org/3/library/venv.html
+[qscintilla-site]: https://riverbankcomputing.com/software/qscintilla/intro
 [repl-definition]: https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop
+[toml-site]: https://toml.io/en/
