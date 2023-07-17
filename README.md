@@ -1,6 +1,6 @@
 # Functino
 
-Functino is a simple code editor and runner for throwaway code. Its functionality is somewhere in between a [REPL][repl-definition] and a fully-featured text editor. With Functino, you simply type code in the editor panel, press the run button, and the output of the code is shown in the output panel. Several languages are supported with no configuration needed to use them. If you've ever found yourself wanting to mess around with a block of code and thought "a REPL would be a bit unwieldy but my normal development environment would be overkill for this," then Functino might be for you!
+Functino is a simple graphical code editor and runner for throwaway code. Its functionality is somewhere in between a [REPL][repl-definition] and a fully-featured text editor. With Functino, you simply type code in the editor panel, press the run button, and the output of the code is shown in the output panel. Several languages are supported with no configuration needed to use them. If you've ever found yourself wanting to mess around with a block of code and thought "a REPL would be a bit unwieldy but my normal development environment would be overkill for this," then Functino might be for you!
 
 ![Dark theme](screenshots/dark_theme.png) ![Light theme](screenshots/light_theme.png)
 
@@ -8,8 +8,13 @@ Functino is a simple code editor and runner for throwaway code. Its functionalit
 
 * Simple interface.
 * Cross-platform.
-* Support for several languages, both compiled and interpreted.
+* Built-in support for several languages:
+    * C and C++ (via gcc)
+    * NodeJS
+    * Python
+    * Rust
 * No configuration needed to use existing compilers/interpreters installed on your system.
+* Ability to configure support for languages and toolchains not already built in.
 * Syntax highlighting.
 * Light and dark theme that adjusts based on your system theme.
 
