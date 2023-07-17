@@ -12,6 +12,7 @@ Functino is a simple graphical code editor and runner for throwaway code. Its fu
     * C and C++ (via gcc)
     * NodeJS
     * Python
+    * Ruby
     * Rust
 * No configuration needed to use existing compilers/interpreters installed on your system.
 * Ability to configure support for languages and toolchains not already built in.

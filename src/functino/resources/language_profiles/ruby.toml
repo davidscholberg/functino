@@ -1,0 +1,7 @@
+name = "Ruby"
+language_id = "ruby"
+source_file_extension = "rb"
+compile = false
+
+[command]
+default = ["ruby", "{source_file_path}"]
