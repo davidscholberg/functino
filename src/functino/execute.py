@@ -25,9 +25,17 @@ def get_output(language_profile: LanguageProfile, code: str) -> tuple[str, str]:
         command = language_profile.generate_command(
             source_file_path, executable_file_path
         )
-        result = subprocess.run(command, capture_output=True, shell=False)
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            shell=False,
+            creationflags=subprocess.CREATE_NO_WINDOW,
+        )
         if language_profile.compile and result.returncode == 0:
             result = subprocess.run(
-                (cast(str, executable_file_path),), capture_output=True, shell=False
+                (cast(str, executable_file_path),),
+                capture_output=True,
+                shell=False,
+                creationflags=subprocess.CREATE_NO_WINDOW,
             )
         return (result.stdout.decode(), result.stderr.decode())

@@ -5,5 +5,3 @@ compile = false
 
 [command]
 default = ["python", "{source_file_path}"]
-# On windows we have to use pythonw to prevent the console window from popping up.
-Windows = ["pythonw", "{source_file_path}"]

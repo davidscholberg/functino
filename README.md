@@ -66,6 +66,8 @@ compile = false
 # exactly equal to "{executable_path}". Functino will replace this with an
 # internally-used temporary file that is meant to be used by the compiler to put the
 # compiled program into. File extensions or prefixes must not be added to this option.
+# See src/functino/resources/language_profiles/rust.toml for an example of how to use
+# this option.
 [command]
 
 # The default command is the command that will be used if there's no specific command
@@ -76,9 +78,8 @@ default = ["python", "{source_file_path}"]
 # key for the command must match up with one of the possible outputs of
 # https://docs.python.org/3/library/platform.html#platform.system.
 #
-# In this case, we need a special command on windows to prevent the console window from
-# popping up.
-Windows = ["pythonw", "{source_file_path}"]
+# The following is an example of specifying a windows-specific command:
+Windows = ["python", "--windows-specific-flag", "{source_file_path}"]
 ```
 
 You can place your custom language profiles in one of the following directories (based on your operating system), and Functino will automatically load them:
