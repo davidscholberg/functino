@@ -16,6 +16,42 @@ authors = [
     { name="David Scholberg", email="recombinant.vector@gmail.com" },
 ]
 description = "Simple graphical code editor and runner for throwaway code"
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: C",
+    "Programming Language :: C++",
+    "Programming Language :: JavaScript",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Ruby",
+    "Programming Language :: Rust",
+    "Topic :: Software Development",
+    "Topic :: Text Editors",
+]
+keywords = [
+    "text editor",
+    "coding",
+    "software development",
+    "qt",
+    "scintilla",
+    "c",
+    "c++",
+    "javascript",
+    "nodejs",
+    "python",
+    "ruby",
+    "rust",
+]
 dependencies = [
     "PyQt6",
     "PyQt6-QScintilla",
@@ -29,9 +65,12 @@ dev = [
     "pre-commit",
 ]
 
+[project.gui-scripts]
+functino = "functino.gui:run"
+
 # This is mainly for debugging on windows so that we can see stderr.
 [project.scripts]
 functinoc = "functino.gui:run"
 
-[project.gui-scripts]
-functino = "functino.gui:run"
+[project.urls]
+"Source Code" = "https://github.com/davidscholberg/functino"
