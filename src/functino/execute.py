@@ -1,4 +1,5 @@
 import os
+import platform
 import subprocess
 from tempfile import TemporaryDirectory, mkstemp
 from typing import cast
@@ -25,17 +26,20 @@ def get_output(language_profile: LanguageProfile, code: str) -> tuple[str, str]:
         command = language_profile.generate_command(
             source_file_path, executable_file_path
         )
+        creationflags = 0
+        if platform.system() == "Windows":
+            creationflags = subprocess.CREATE_NO_WINDOW  # type: ignore
         result = subprocess.run(
             command,
             capture_output=True,
             shell=False,
-            creationflags=subprocess.CREATE_NO_WINDOW,
+            creationflags=creationflags,
         )
         if language_profile.compile and result.returncode == 0:
             result = subprocess.run(
                 (cast(str, executable_file_path),),
                 capture_output=True,
                 shell=False,
-                creationflags=subprocess.CREATE_NO_WINDOW,
+                creationflags=creationflags,
             )
         return (result.stdout.decode(), result.stderr.decode())
