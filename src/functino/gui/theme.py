@@ -1,4 +1,4 @@
-from pathlib import Path
+from importlib.abc import Traversable
 from xml.etree import ElementTree
 
 from PyQt6.QtGui import QColor, QPalette
@@ -12,9 +12,8 @@ class Theme:
     to the relevant data.
     """
 
-    def __init__(self, theme_path: Path) -> None:
-        tree = ElementTree.parse(theme_path)
-        self._root = tree.getroot()
+    def __init__(self, theme_path: Traversable) -> None:
+        self._root = ElementTree.fromstring(theme_path.read_text())
 
     def get_global_background_color(self) -> str:
         """

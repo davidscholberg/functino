@@ -5,11 +5,11 @@ from PyQt6.QtGui import (
     QCloseEvent,
     QColor,
     QFont,
-    QIcon,
     QKeySequence,
     QPalette,
     QShortcut,
 )
+from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtWidgets import (
     QPushButton,
     QComboBox,
@@ -71,9 +71,9 @@ class MainWindow(QMainWindow):
         self._icon_set = icon_set
         self._languages_combo_box = QComboBox()
         self._languages_combo_box.setToolTip("Select Language Profile")
-        self._run_button = QPushButton()
+        self._run_button = SvgButton(self._icon_set.play_icon_data)
         self._run_button.setToolTip("Run (Ctrl+r)")
-        self._settings_button = QPushButton()
+        self._settings_button = SvgButton(self._icon_set.settings_icon_data)
         self._editors_layout = QStackedLayout()
         self._output_widget = OutputWidget()
         self._main_splitter = self._make_main_splitter()
@@ -168,8 +168,6 @@ class MainWindow(QMainWindow):
         self._languages_combo_box.setSizePolicy(
             QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred
         )
-        self._run_button.setIcon(QIcon(str(self._icon_set.play_path)))
-        self._settings_button.setIcon(QIcon(str(self._icon_set.settings_path)))
         top_row_spacer = QWidget()
         top_row_spacer.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
@@ -327,3 +325,23 @@ class MainWindow(QMainWindow):
             lexer.setColor(QColor(color_hex), style_id)
         current_editor: Editor = cast(Editor, self._editors_layout.currentWidget())
         current_editor.setLexer(lexer)
+
+
+class SvgButton(QPushButton):
+    """
+    Button that displays an SVG image.
+
+    This class mostly exists to encapsulate the extra complexity required to load an SVG
+    from memory instead of a file.
+    """
+
+    def __init__(self, svg_data: bytes) -> None:
+        super().__init__()
+        svg_widget = QSvgWidget()
+        renderer = svg_widget.renderer()
+        renderer.load(svg_data)  # type: ignore (idk why pylance doesn't like this)
+        renderer.setAspectRatioMode(Qt.AspectRatioMode.KeepAspectRatio)
+        layout = QHBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.addWidget(svg_widget)
+        self.setLayout(layout)

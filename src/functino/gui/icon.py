@@ -1,10 +1,9 @@
-from pathlib import Path
 from functino.project_path import get_icons_path
 
 
 class IconSet:
     """
-    Manages paths to icons based on color mode.
+    Loads icon data based on color mode.
     """
 
     Dark = 0
@@ -19,24 +18,30 @@ class IconSet:
         icons_path = get_icons_path()
         match color_mode:
             case self.Dark:
-                self._play_path = icons_path / "play_dark.svg"
-                self._settings_path = icons_path / "settings_dark.svg"
+                self._play_icon_data = icons_path.joinpath("play_dark.svg").read_bytes()
+                self._settings_icon_data = icons_path.joinpath(
+                    "settings_dark.svg"
+                ).read_bytes()
             case self.Light:
-                self._play_path = icons_path / "play_light.svg"
-                self._settings_path = icons_path / "settings_light.svg"
+                self._play_icon_data = icons_path.joinpath(
+                    "play_light.svg"
+                ).read_bytes()
+                self._settings_icon_data = icons_path.joinpath(
+                    "settings_light.svg"
+                ).read_bytes()
             case _:
                 raise ValueError(f"invalid color mode {color_mode}")
 
     @property
-    def play_path(self) -> Path:
+    def play_icon_data(self) -> bytes:
         """
-        Return the path to the play icon.
+        Return the data for the play icon.
         """
-        return self._play_path
+        return self._play_icon_data
 
     @property
-    def settings_path(self) -> Path:
+    def settings_icon_data(self) -> bytes:
         """
-        Return the path to the settings icon.
+        Return the data for the settings icon.
         """
-        return self._settings_path
+        return self._settings_icon_data
