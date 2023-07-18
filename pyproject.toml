@@ -15,7 +15,7 @@ version = "0.0.1"
 authors = [
     { name="David Scholberg", email="recombinant.vector@gmail.com" },
 ]
-description = "Simple code editor and runner for throwaway code"
+description = "Simple graphical code editor and runner for throwaway code"
 dependencies = [
     "PyQt6",
     "PyQt6-QScintilla",
