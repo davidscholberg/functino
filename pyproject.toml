@@ -16,7 +16,7 @@ authors = [
     { name="David Scholberg", email="recombinant.vector@gmail.com" },
 ]
 description = "Simple graphical code editor and runner for throwaway code"
-license = { file = "LICENSE" }
+license = { text = "BSD-2-Clause license" }
 readme = "README.md"
 requires-python = ">=3.11"
 classifiers = [
