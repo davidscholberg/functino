@@ -1,8 +1,21 @@
+<!--
+The following monstrosity will automatically center all images included in this readme.
+-->
+<style>
+img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+
 # Functino
 
 Functino is a simple graphical code editor and runner for throwaway code. Its functionality is somewhere in between a [REPL][repl-definition] and a fully-featured text editor. With Functino, you simply type code in the editor panel, press the run button, and the output of the code is shown in the output panel. Several languages are supported with no configuration needed to use them. If you've ever found yourself wanting to mess around with a block of code and thought "a REPL would be a bit unwieldy but my normal development environment would be overkill for this," then Functino might be for you!
 
-![Dark theme](screenshots/dark_theme.png) ![Light theme](screenshots/light_theme.png)
+![Dark theme](https://raw.githubusercontent.com/davidscholberg/functino/main/screenshots/dark_theme.png)
+![Light theme](https://raw.githubusercontent.com/davidscholberg/functino/main/screenshots/light_theme.png)
 
 ### Features
 
