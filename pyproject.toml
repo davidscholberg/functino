@@ -11,7 +11,7 @@ where = ["src"]
 
 [project]
 name = "functino"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
     { name="David Scholberg", email="recombinant.vector@gmail.com" },
 ]

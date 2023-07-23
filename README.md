@@ -24,9 +24,11 @@ Functino is a simple graphical code editor and runner for throwaway code. Its fu
 
 ### Installation
 
+There are two options for installation; you can grab a pre-built binary from the [github releases page][releases-site] (currently for Windows and Linux only), or you can install from [PyPI][pypi-site] (all platforms):
+
 1. Make sure [python is installed][python-install].
 
-2. Install Functino from [PyPI][pypi-site]:
+2. Install Functino:
 
 ```bash
 pip install functino
@@ -137,5 +139,6 @@ Functino is written in [Python][python-site] and uses [PyQt6][pyqt6-site] for al
 [python-site]: https://www.python.org/
 [python-venv]: https://docs.python.org/3/library/venv.html
 [qscintilla-site]: https://riverbankcomputing.com/software/qscintilla/intro
+[releases-site]: https://github.com/davidscholberg/functino/releases
 [repl-definition]: https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop
 [toml-site]: https://toml.io/en/
