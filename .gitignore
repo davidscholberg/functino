@@ -1,5 +1,6 @@
 __pycache__
 .venv
 functino.egg-info/
+functino.spec
 build/
 dist/

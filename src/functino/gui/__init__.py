@@ -34,3 +34,7 @@ def run() -> None:
     main_window = MainWindow(cast(Theme, theme), cast(IconSet, icon_set))
     main_window.show()
     app.exec()
+
+
+if __name__ == "__main__":
+    run()

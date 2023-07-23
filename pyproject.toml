@@ -64,6 +64,7 @@ dev = [
     "docformatter",
     "flake8",
     "pre-commit",
+    "pyinstaller",
 ]
 
 [project.gui-scripts]
